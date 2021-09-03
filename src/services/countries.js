@@ -5,6 +5,9 @@ import countryTemplate from '../templates/country.hbs';
 import { notification } from '../js/pnotify';
 import clearView from '../js/clearView';
 
+const INFO_MESSAGE_NOTIFY = 'Too many matches found. Please enter a more specific query!';
+const ERROR_MESSAGE_NOTIFY = 'Oops, there is no country with that name';
+
 function onCountriesSearchInput({ target: { value } }) {
     const searchQuery = value.trim();
     const isSearchQueryEmpty = searchQuery.length === 0;
@@ -31,12 +34,12 @@ function updateView(countries) {
         return;
     }
 
-    notification('info', 'Too many matches found. Please enter a more specific query!');
+    notification('info', INFO_MESSAGE_NOTIFY);
 }
 
 function errorHandler(error) {
     console.log(error);
-    notification('error', 'Oops, there is no country with that name');
+    notification('error', ERROR_MESSAGE_NOTIFY);
 }
 
 function onCountryItemClick({ target }) {
