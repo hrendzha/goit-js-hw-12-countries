@@ -22,13 +22,13 @@ function onCountriesSearchInput({ target: { value } }) {
 
 function updateView(countries) {
     if (countries.length === 1) {
-        refs.countryList.innerHTML = countryTemplate(countries);
+        renderMarkupInCountryList(countryTemplate, countries);
         removeEventListenerOnCountryItemClick();
         return;
     }
 
     if (countries.length >= 2 && countries.length <= 10) {
-        refs.countryList.innerHTML = listCountryNameTemplate(countries);
+        renderMarkupInCountryList(listCountryNameTemplate, countries);
 
         refs.countryList.addEventListener('click', onCountryItemClick);
         return;
@@ -37,39 +37,46 @@ function updateView(countries) {
     notification('info', INFO_MESSAGE_NOTIFY);
 }
 
+function renderMarkupInCountryList(template, data) {
+    refs.countryList.innerHTML = template(data);
+}
+
 function errorHandler(error) {
     console.log(error);
     notification('error', ERROR_MESSAGE_NOTIFY);
 }
 
+// ? Тут не знаю як ще можна відрефакторити цю функцію
 function onCountryItemClick({ target }) {
     const { nodeName } = target;
     let searchQuery = null;
 
     if (nodeName === 'LI') {
         searchQuery = target.querySelector('span').textContent;
-        fetchCountries(searchQuery).then(updateView).catch(errorHandler);
-        removeEventListenerOnCountryItemClick();
+        getCountryAndRemoveEventListener(searchQuery);
         return;
     }
 
     if (nodeName === 'IMG') {
         searchQuery = target.nextElementSibling.textContent;
-        fetchCountries(searchQuery).then(updateView).catch(errorHandler);
-        removeEventListenerOnCountryItemClick();
+        getCountryAndRemoveEventListener(searchQuery);
         return;
     }
 
     if (nodeName === 'SPAN') {
         searchQuery = target.textContent;
-        fetchCountries(searchQuery).then(updateView).catch(errorHandler);
-        removeEventListenerOnCountryItemClick();
+        getCountryAndRemoveEventListener(searchQuery);
         return;
     }
 }
 
 function removeEventListenerOnCountryItemClick() {
     refs.countryList.removeEventListener('click', onCountryItemClick);
+}
+
+function getCountryAndRemoveEventListener(searchQuery) {
+    fetchCountries(searchQuery).then(updateView).catch(errorHandler);
+    removeEventListenerOnCountryItemClick();
 }
 
 export { onCountriesSearchInput };
