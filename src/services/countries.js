@@ -24,6 +24,7 @@ function updateView(countries) {
     if (countries.length === 1) {
         renderMarkupInCountryList(countryTemplate, countries);
         removeEventListenerOnCountryItemClick();
+        clearCountrySearchInput();
         return;
     }
 
@@ -46,7 +47,6 @@ function errorHandler(error) {
     notification('error', ERROR_MESSAGE_NOTIFY);
 }
 
-// ? Тут не знаю як ще можна відрефакторити цю функцію
 function onCountryItemClick({ target }) {
     const { nodeName } = target;
     let searchQuery = null;
@@ -77,6 +77,10 @@ function removeEventListenerOnCountryItemClick() {
 function getCountryAndRemoveEventListener(searchQuery) {
     fetchCountries(searchQuery).then(updateView).catch(errorHandler);
     removeEventListenerOnCountryItemClick();
+}
+
+function clearCountrySearchInput() {
+    refs.countriesSearch.value = '';
 }
 
 export { onCountriesSearchInput };
